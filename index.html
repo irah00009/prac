@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center; 
+            background:papayawhip;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #product-list {
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: space-around; 
+            text-align: left; 
+        }
+
+        .product {
+            border: 1px solid #000000;
+            background-color: white;
+            padding: 15px;
+            margin: 10px;
+            display: flex;
+            align-items: center; 
+            justify-content: flex-start;
+            flex-basis: 30%; 
+            box-sizing: border-box;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s; 
+        }
+
+        .product:hover {
+            background-color: rgb(200, 233, 238); 
+            transform: scale(1.05); 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+        }
+
+        .product img {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        .product div {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product List</h1> <!-- Title will now be centered properly -->
+    
+    <div id="product-list"></div>
+
+    <script>
+        // Fetch product data from the JSON endpoint using AJAX
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:3000/api/json', true); // Updated endpoint
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                const data = JSON.parse(xhr.responseText);
+                const productList = document.getElementById('product-list');
+
+                data.forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.classList.add('product');
+                    productItem.innerHTML = `
+                        <img src="${product.imageUrl}" alt="${product.name}">
+                        <div>
+                            <h2>${product.name}</h2>
+                            <p>${product.description}</p>
+                            <p><strong>Price: $${product.price.toFixed(2)}</strong></p>
+                        </div>
+                    `;
+                    productList.appendChild(productItem); // Append the product item to the product list
+                });
+            } else {
+                console.error('Error fetching product data:', xhr.statusText);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('Request failed');
+        };
+        xhr.send(); // Send the request
+    </script>
+</body>
+</html>
